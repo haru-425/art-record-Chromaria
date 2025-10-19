@@ -1,74 +1,340 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>画材記録アプリ</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="icon" href="icon-192.png" />
+
   <style>
-    body { font-family: system-ui, sans-serif; margin: 2em; background: #f8fafc; }
-    h1 { color: #444; }
-    input, textarea { width: 100%; margin: 0.3em 0; padding: 0.5em; border: 1px solid #ccc; border-radius: 6px; }
-    button { margin-top: 0.5em; padding: 0.5em 1em; border: none; background: #3b82f6; color: white; border-radius: 6px; cursor: pointer; }
-    button:hover { background: #2563eb; }
-    .item { background: white; border-radius: 10px; padding: 1em; margin-top: 1em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    small { color: #666; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      padding: 1em;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    h1 {
+      font-size: 1.6em;
+      color: #3b82f6;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      margin-top: 0.3em;
+      padding: 0.6em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+    .toolbar input {
+      flex: 1;
+    }
+    #list {
+      display: grid;
+      gap: 1em;
+    }
+    .item {
+      background: white;
+      border-radius: 12px;
+      padding: 1em;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .thumb {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .tag {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      border-radius: 6px;
+      padding: 0.1em 0.5em;
+      margin-right: 0.3em;
+      font-size: 0.9em;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2em;
+      color: #888;
+      font-size: 0.8em;
+    }
   </style>
-</head>
-<body>
-  <h1>🎨 画材記録</h1>
-  <input id="name" placeholder="画材名 (例: ホルベイン水彩 #33)">
-  <input id="type" placeholder="種類 (例: 絵具, 筆, 紙)">
-  <textarea id="note" placeholder="メモ (使用感など)"></textarea>
-  <button id="add">追加</button>
-  <button id="clear">全削除</button>
-  <hr>
-  <div id="list"></div>
 
   <script>
-    const listEl = document.getElementById('list');
-    let data = JSON.parse(localStorage.getItem('artTools') || '[]');
-
-    function render() {
-      listEl.innerHTML = '';
-      data.forEach((item, i) => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-          <b>${item.name}</b>（${item.type}）<br>
-          <small>${item.note || '—'}</small><br>
-          <button onclick="removeItem(${i})">削除</button>
-        `;
-        listEl.appendChild(div);
-      });
-      localStorage.setItem('artTools', JSON.stringify(data));
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
     }
+  </script>
+</head>
 
-    function removeItem(i) {
-      data.splice(i, 1);
-      render();
-    }
+<body>
+  <header>
+    <h1>🎨 画材記録アプリ</h1>
+    <p>ローカルに保存される安全なメモアプリ（PWA対応）</p>
+  </header>
 
-    document.getElementById('add').onclick = () => {
-      const name = document.getElementById('name').value.trim();
-      if (!name) return alert('画材名を入力してください');
-      data.push({
-        name,
-        type: document.getElementById('type').value,
-        note: document.getElementById('note').value
+  <!-- 入力フォーム -->
+  <section id="formSection">
+    <input id="name" placeholder="画材名（例：ホルベイン 水彩 #33）" />
+    <select id="category">
+      <option value="">カテゴリを選択</option>
+      <option value="絵具">絵具</option>
+      <option value="筆">筆</option>
+      <option value="紙">紙</option>
+      <option value="その他">その他</option>
+    </select>
+    <input id="tags" placeholder="タグ（カンマ区切り：例『青,透明水彩』）" />
+    <textarea id="note" placeholder="メモ（使用感など）"></textarea>
+    <input id="image" type="file" accept="image/*" />
+    <button id="add">追加</button>
+    <button id="clear">全削除</button>
+    <hr />
+  </section>
+
+  <!-- 検索・操作ツールバー -->
+  <div class="toolbar">
+    <input id="search" placeholder="🔍 検索（名前・タグ・メモ）" />
+    <button id="export">💾 JSONエクスポート</button>
+    <input id="importFile" type="file" accept=".json" style="display:none">
+    <button id="import">📂 インポート</button>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>© 2025 画材記録アプリ — データはあなたの端末にのみ保存されます。</p>
+  </footer>
+
+  <script>
+    // IndexedDB 用ヘルパー
+    const dbName = "artRecordDB";
+    let db;
+
+    const openDB = () => {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(dbName, 1);
+        req.onupgradeneeded = e => {
+          const db = e.target.result;
+          db.createObjectStore("images");
+        };
+        req.onsuccess = e => {
+          db = e.target.result;
+          resolve(db);
+        };
+        req.onerror = reject;
       });
-      render();
-      document.getElementById('name').value = '';
-      document.getElementById('type').value = '';
-      document.getElementById('note').value = '';
     };
 
-    document.getElementById('clear').onclick = () => {
-      if (confirm('本当に全削除しますか？')) {
-        data = [];
+    const saveImage = async (id, file) => {
+      const bitmap = await createImageBitmap(file);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const scale = 400 / Math.max(bitmap.width, bitmap.height);
+      canvas.width = bitmap.width * scale;
+      canvas.height = bitmap.height * scale;
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      return new Promise(resolve => {
+        const tx = db.transaction("images", "readwrite");
+        tx.objectStore("images").put(dataUrl, id);
+        tx.oncomplete = () => resolve();
+      });
+    };
+
+    const getImage = id =>
+      new Promise(resolve => {
+        const tx = db.transaction("images");
+        const req = tx.objectStore("images").get(id);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      });
+
+    const deleteImage = id =>
+      new Promise(resolve => {
+        const tx = db.transaction("images", "readwrite");
+        tx.objectStore("images").delete(id);
+        tx.oncomplete = resolve;
+      });
+
+    // localStorage データ
+    let data = JSON.parse(localStorage.getItem("artTools") || "[]");
+    const saveData = () =>
+      localStorage.setItem("artTools", JSON.stringify(data));
+
+    const listEl = document.getElementById("list");
+const render = async (filter = "") => {
+  listEl.innerHTML = "";
+
+  // 重複防止のため、一意なIDセットを使う
+  const displayed = new Set();
+
+  // 大文字小文字を無視して検索
+  const keyword = filter.trim().toLowerCase();
+
+  for (const item of data) {
+    // すでに表示済みならスキップ
+    if (displayed.has(item.id)) continue;
+
+    // 検索条件がある場合、名前・メモ・タグをまとめて判定
+    if (keyword) {
+      const textFields = [
+        item.name,
+        item.note,
+        ...(item.tags || [])
+      ].join(" ").toLowerCase();
+
+      if (!textFields.includes(keyword)) continue;
+    }
+
+    displayed.add(item.id);
+
+    const div = document.createElement("div");
+    div.className = "item";
+
+    const imgUrl = item.imageId ? await getImage(item.imageId) : null;
+
+    div.innerHTML = `
+      ${imgUrl ? `<img src="${imgUrl}" class="thumb">` : ""}
+      <h3>${item.name}</h3>
+      <p>カテゴリ：${item.category || "未設定"}</p>
+      <div>${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      <p>${item.note || ""}</p>
+      <button onclick="removeItem('${item.id}')">削除</button>
+      <button onclick="downloadItem('${item.id}')">個別保存</button>
+    `;
+
+    listEl.appendChild(div);
+  }
+};
+
+    // 削除
+    async function removeItem(id) {
+      const i = data.findIndex(x => x.id === id);
+      if (i >= 0) {
+        if (data[i].imageId) await deleteImage(data[i].imageId);
+        data.splice(i, 1);
+        saveData();
         render();
       }
+    }
+
+    // 個別 JSON 保存
+    async function downloadItem(id) {
+      const item = data.find(x => x.id === id);
+      const json = { ...item };
+      json.image = item.imageId ? await getImage(item.imageId) : null;
+      const blob = new Blob([JSON.stringify(json, null, 2)], {
+        type: "application/json"
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${item.name}.json`;
+      a.click();
+    }
+
+    // 追加
+    document.getElementById("add").onclick = async () => {
+      const name = document.getElementById("name").value.trim();
+      if (!name) return alert("画材名を入力してください");
+      const item = {
+        id: crypto.randomUUID(),
+        name,
+        category: document.getElementById("category").value,
+        tags: document.getElementById("tags").value.split(",").map(t => t.trim()).filter(Boolean),
+        note: document.getElementById("note").value,
+        imageId: null
+      };
+      const file = document.getElementById("image").files[0];
+      if (file) {
+        item.imageId = crypto.randomUUID();
+        await saveImage(item.imageId, file);
+      }
+      data.push(item);
+      saveData();
+      render();
+      document.querySelectorAll("#formSection input, #formSection textarea").forEach(el => el.value = "");
     };
 
-    render();
+    document.getElementById("clear").onclick = async () => {
+      if (!confirm("すべて削除しますか？")) return;
+      for (const item of data) {
+        if (item.imageId) await deleteImage(item.imageId);
+      }
+      data = [];
+      saveData();
+      render();
+    };
+
+    document.getElementById("search").oninput = e => render(e.target.value);
+
+    // JSON エクスポート
+    document.getElementById("export").onclick = async () => {
+      const all = [];
+      for (const item of data) {
+        const img = item.imageId ? await getImage(item.imageId) : null;
+        all.push({ ...item, image: img });
+      }
+      const blob = new Blob([JSON.stringify(all, null, 2)], {
+        type: "application/json"
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "art-record-export.json";
+      a.click();
+    };
+
+    // JSON インポート
+    document.getElementById("import").onclick = () =>
+      document.getElementById("importFile").click();
+
+    document.getElementById("importFile").onchange = async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const arr = JSON.parse(text);
+      for (const item of arr) {
+        if (item.image) {
+          item.imageId = crypto.randomUUID();
+          await new Promise(res => {
+            const tx = db.transaction("images", "readwrite");
+            tx.objectStore("images").put(item.image, item.imageId);
+            tx.oncomplete = res;
+          });
+          delete item.image;
+        }
+        data.push(item);
+      }
+      saveData();
+      render();
+      alert("インポートが完了しました！");
+    };
+
+    // 初期化
+    openDB().then(() => render());
   </script>
 </body>
 </html>
