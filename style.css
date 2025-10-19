@@ -1,0 +1,246 @@
+:root {
+  --bg: #f9fafb;
+  --card-bg: #ffffff;
+  --accent: #3b82f6;
+  --accent-light: #93c5fd;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111827;
+    --card-bg: #1f2937;
+    --accent: #60a5fa;
+    --accent-light: #93c5fd;
+    --text: #f3f4f6;
+    --text-muted: #9ca3af;
+    --shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+body {
+  font-family: "Inter", "Hiragino Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: var(--bg);
+  z-index: 10;
+  text-align: center;
+  padding: 1em 0.5em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  backdrop-filter: blur(5px);
+}
+
+h1 {
+  color: var(--accent);
+  margin: 0;
+  font-size: 1.6em;
+}
+
+/* --- 入力フォーム --- */
+#formSection {
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  padding: 1.5em;
+  width: 90%;
+  max-width: 600px;
+  margin-top: 1.5em;
+  animation: fadeIn 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+}
+
+#formSection input,
+#formSection select,
+#formSection textarea {
+  width: 100%;
+  padding: 0.75em;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1em;
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+#formSection input:focus,
+#formSection textarea:focus,
+#formSection select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-light);
+}
+
+#formSection input[type="file"] {
+  padding: 0.6em;
+  border: 1px dashed #9ca3af;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+/* --- ボタン --- */
+button {
+  margin-top: 0.6em;
+  padding: 0.75em 1.2em;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+  background: #2563eb;
+  transform: scale(1.03);
+}
+
+button.small {
+  padding: 0.5em 0.8em;
+  font-size: 0.85em;
+}
+
+/* --- 検索・ツールバー --- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  justify-content: center;
+  margin-top: 1em;
+  width: 90%;
+  max-width: 800px;
+}
+
+.toolbar input {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.7em;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+/* --- 一覧カード --- */
+#list {
+  width: 90%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1em;
+  margin-top: 1.5em;
+  margin-bottom: 2em;
+}
+
+.item {
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.4s ease;
+  transition: transform 0.2s ease;
+}
+
+.item:hover {
+  transform: translateY(-4px);
+}
+
+.thumb {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 0.6em;
+}
+
+/* --- タグ --- */
+.tag {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.1em 0.5em;
+  margin: 0.2em;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.tag:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* --- フッター --- */
+footer {
+  margin-bottom: 1em;
+  color: var(--text-muted);
+  font-size: 0.8em;
+  text-align: center;
+}
+
+/* --- アニメーション --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.preview {
+  margin-top: 0.5em;
+  width: 150px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.15);
+  display: block;
+}
+
+#topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--accent);
+  color: white;
+  padding: 0.6em 1em;
+  border-radius: 0 0 1em 1em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+#topBar h1 {
+  font-size: 1.3em;
+  margin: 0;
+}
+
+.palette-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  background: rgba(255,255,255,0.2);
+  padding: 0.4em 0.8em;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.palette-link:hover {
+  background: rgba(255,255,255,0.4);
+}
