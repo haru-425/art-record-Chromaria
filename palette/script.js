@@ -93,8 +93,7 @@ document.getElementById('create-form').addEventListener('submit', e => {
     alert('すべての項目を正しく入力してください（色は1色以上）');
     return;
   }
-
-  const newPalette = { name, author, description, colors };
+const newPalette = { name, author, description, colors, favorite: false };
   userPalettes.push(newPalette);
   renderAllPalettes();
   e.target.reset();
