@@ -52,7 +52,14 @@ const render = async (filter = "") => {
   for (const item of data) {
     if (shownIds.has(item.id)) continue;
 
-    const text = [item.name, item.note, ...(item.tags || [])].join(" ").toLowerCase();
+    // 名前・メモ・タグ・カテゴリーを検索対象に追加
+    const text = [
+      item.name,
+      item.note,
+      item.category || "",
+      ...(item.tags || [])
+    ].join(" ").toLowerCase();
+
     if (keyword && !text.includes(keyword)) continue;
 
     shownIds.add(item.id);
