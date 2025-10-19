@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>カラーパレットギャラリー</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎨 カラーパレットギャラリー</h1>
+    <input type="text" id="search" placeholder="パレット名・作者・カラーコードで検索" />
+  </header>
+
+  <section id="create-section">
+    <h2>🛠 パレットを作成</h2>
+    <form id="create-form">
+      <input type="text" id="new-name" placeholder="パレット名" required />
+      <input type="text" id="new-author" placeholder="作者名" required />
+      <textarea id="new-description" placeholder="説明" required></textarea>
+      <div class="color-inputs">
+        <div class="color-row">
+          <input type="color" id="picker1" value="#ff0000" />
+          <input type="text" id="color1" value="#ff0000" />
+        </div>
+        <div class="color-row">
+          <input type="color" id="picker2" value="#00ff00" />
+          <input type="text" id="color2" value="#00ff00" />
+        </div>
+        <div class="color-row">
+          <input type="color" id="picker3" value="#0000ff" />
+          <input type="text" id="color3" value="#0000ff" />
+        </div>
+        <div class="color-row">
+          <input type="color" id="picker4" value="#ffff00" />
+          <input type="text" id="color4" value="#ffff00" />
+        </div>
+        <div class="color-row">
+          <input type="color" id="picker5" value="#ff00ff" />
+          <input type="text" id="color5" value="#ff00ff" />
+        </div>
+      </div>
+      <button type="submit">追加</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>📁 パレット（サイト収録）</h2>
+    <div id="site-palettes" class="palette-section"></div>
+  </section>
+
+  <section>
+    <h2>🗂 マイパレット（自作）</h2>
+    <div id="user-palettes" class="palette-section"></div>
+  </section>
+
+  <footer>
+    <p>© 2025 はるさんのカラーパレットコレクション</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

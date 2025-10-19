@@ -7,13 +7,13 @@
   },
   {
     "name": "桜舞う春",
-    "author": "桜井ミナ",
+    "author": "如月あき",
     "colors": ["#FFC1CC", "#FFDDE2", "#FFF5F7", "#B983FF", "#845EC2"],
     "description": "春の柔らかさを表現した桜色のグラデーション。"
   },
   {
     "name": "北欧ナチュラル",
-    "author": "NaoK",
+    "author": "如月あき",
     "colors": ["#A3B18A", "#588157", "#3A5A40", "#DAD7CD", "#344E41"],
     "description": "木と森のぬくもりを感じる北欧風グリーンパレット。"
   },
@@ -25,67 +25,67 @@
   },
   {
     "name": "レトロ喫茶",
-    "author": "KuroCat",
+    "author": "如月あき",
     "colors": ["#6F4E37", "#D9CAB3", "#E9E1D0", "#C8B6A6", "#493323"],
     "description": "古い喫茶店の香ばしいコーヒーと木の温もり。"
   },
   {
     "name": "テクノポップ",
-    "author": "PixelRin",
+    "author": "如月あき",
     "colors": ["#00F5D4", "#9B5DE5", "#F15BB5", "#FEE440", "#00BBF9"],
     "description": "ビビッドで楽しい未来感のあるデジタルカラー。"
   },
   {
     "name": "墨と和紙",
-    "author": "Haru Y.",
+    "author": "如月あき",
     "colors": ["#2B2B2B", "#595959", "#D9D9D9", "#F5F5F5", "#FFFFFF"],
     "description": "墨の濃淡と和紙の質感をイメージしたモノトーン構成。"
   },
   {
     "name": "夏祭りの夜",
-    "author": "Riku.T",
+    "author": "如月あき",
     "colors": ["#1E3A8A", "#E11D48", "#FACC15", "#FDE68A", "#F3F4F6"],
     "description": "夜空と提灯、浴衣を思わせる夏の祭りの彩り。"
   },
   {
     "name": "銀河ネオン",
-    "author": "LunaM",
+    "author": "如月あき",
     "colors": ["#8E2DE2", "#4A00E0", "#00F5D4", "#FF00C8", "#FFB200"],
     "description": "宇宙とサイバーパンクの融合。発光するような鮮烈な色。"
   },
   {
-    "name": "紅葉狩り",
+    "name": "如月あき",
     "author": "Mizuki.A",
     "colors": ["#8B0000", "#E85D04", "#F48C06", "#FAA307", "#FFBA08"],
     "description": "秋の山々の紅葉と黄金の葉をモチーフにしたパレット。"
   },
   {
     "name": "キャンディショップ",
-    "author": "SakuPop",
+    "author": "如月あき",
     "colors": ["#FFB6C1", "#FFD700", "#ADFF2F", "#87CEFA", "#BA55D3"],
     "description": "お菓子のようにカラフルで元気が出るポップカラー。"
   },
   {
     "name": "静寂の森",
-    "author": "Aomi",
+    "author": "如月あき",
     "colors": ["#1A472A", "#356859", "#B9E4C9", "#A3B18A", "#DAD7CD"],
     "description": "深い森と朝露の香りをイメージした落ち着いた緑系。"
   },
   {
     "name": "夕焼けグラデーション",
-    "author": "Nana",
+    "author": "如月あき",
     "colors": ["#FF4500", "#FF7F50", "#FFD580", "#FFF5E4", "#4B0082"],
     "description": "沈む夕日と紫がかった空の境界をイメージ。"
   },
   {
     "name": "モノクロームモード",
-    "author": "Kai",
+    "author": "如月あき",
     "colors": ["#000000", "#222222", "#555555", "#AAAAAA", "#FFFFFF"],
     "description": "シンプルなデザイン向けの無彩色パレット。"
   },
   {
     "name": "サイバーグリッド",
-    "author": "TechnoY",
+    "author": "如月あき",
     "colors": ["#0D0D0D", "#1F51FF", "#39FF14", "#FF073A", "#E0FFFF"],
     "description": "SF的で電子的な世界観の配色。"
   }

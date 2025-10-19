@@ -38,16 +38,26 @@ body {
   align-items: center;
 }
 
+/* ヘッダーの基本調整 */
 header {
-  position: sticky;
-  top: 0;
-  width: 100%;
+  display: flex;
+  flex-direction: column; /* 縦に並べる */
+  align-items: center;    /* 中央揃え */
   background: var(--bg);
-  z-index: 10;
-  text-align: center;
   padding: 1em 0.5em;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  backdrop-filter: blur(5px);
+}
+
+/* ロゴ */
+#logo {
+  height: 512px; /* 好みのサイズに調整 */
+  margin-bottom: 0.5em; /* ナビゲーションとの間隔 */
+}
+
+/* ナビゲーションリンク */
+header nav {
+  display: flex;
+  gap: 0.5em;
 }
 
 h1 {
@@ -235,13 +245,12 @@ footer {
   color: white;
   text-decoration: none;
   font-weight: bold;
-  background: rgba(255,255,255,0.2);
+  background: var(--accent);
   padding: 0.4em 0.8em;
   border-radius: 6px;
   transition: background 0.2s;
 }
 
 .palette-link:hover {
-  background: rgba(255,255,255,0.4);
+  background: var(--accent-light);
 }
-
