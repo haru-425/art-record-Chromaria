@@ -19,13 +19,17 @@ function renderAllPalettes(keyword = '') {
 function renderPalettes(data, containerId, keyword = '', isUser = false) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-  const filtered = data.filter(p =>
-    p.name.toLowerCase().includes(keyword) ||
-    p.author.toLowerCase().includes(keyword) ||
-    p.description.toLowerCase().includes(keyword) ||
-    p.colors.some(c => c.toLowerCase().includes(keyword))
-  );
-  filtered.forEach((palette, index) => {
+
+  const sorted = [...data]
+    .filter(p =>
+      p.name.toLowerCase().includes(keyword) ||
+      p.author.toLowerCase().includes(keyword) ||
+      p.description.toLowerCase().includes(keyword) ||
+      p.colors.some(c => c.toLowerCase().includes(keyword))
+    )
+    .sort((a, b) => (b.favorite === true) - (a.favorite === true));
+
+  sorted.forEach((palette, index) => {
     const card = document.createElement('div');
     card.className = 'palette-card';
     card.innerHTML = `
@@ -37,13 +41,16 @@ function renderPalettes(data, containerId, keyword = '', isUser = false) {
       ${isUser ? `
         <button onclick="exportSinglePalette(${index})">JSON保存</button>
         <button onclick="deleteUserPalette(${index})" style="background:#888;margin-left:0.5rem;">削除</button>
+        <button onclick="toggleFavorite(${index})" style="background:${palette.favorite ? '#FFD700' : '#ccc'};margin-left:0.5rem;">
+          ${palette.favorite ? '★ お気に入り' : '☆ お気に入り'}
+        </button>
       ` : ''}
     `;
     container.appendChild(card);
   });
 }
 
-// 検索
+// 検索イベント
 document.getElementById('search').addEventListener('input', e => {
   const keyword = e.target.value.toLowerCase();
   renderAllPalettes(keyword);
@@ -56,7 +63,7 @@ function copyColor(hex) {
   });
 }
 
-// 自作パレットの個別JSON保存
+// 自作パレットのJSON保存
 function exportSinglePalette(index) {
   const palette = userPalettes[index];
   const json = JSON.stringify(palette, null, 2);
@@ -77,7 +84,13 @@ function deleteUserPalette(index) {
   }
 }
 
-// パレット作成
+// お気に入りトグル
+function toggleFavorite(index) {
+  userPalettes[index].favorite = !userPalettes[index].favorite;
+  renderAllPalettes();
+}
+
+// パレット作成フォーム送信
 document.getElementById('create-form').addEventListener('submit', e => {
   e.preventDefault();
   const name = document.getElementById('new-name').value.trim();
@@ -93,19 +106,20 @@ document.getElementById('create-form').addEventListener('submit', e => {
     alert('すべての項目を正しく入力してください（色は1色以上）');
     return;
   }
-const newPalette = { name, author, description, colors, favorite: false };
+
+  const newPalette = { name, author, description, colors, favorite: false };
   userPalettes.push(newPalette);
   renderAllPalettes();
   e.target.reset();
 
-  // ピッカーと入力欄を初期化
+  // 入力欄とピッカーを初期化
   for (let i = 1; i <= 5; i++) {
     document.getElementById(`picker${i}`).value = '#000000';
     document.getElementById(`color${i}`).value = '#000000';
   }
 });
 
-// ピッカーとテキスト同期
+// ピッカーとテキスト入力の同期
 for (let i = 1; i <= 5; i++) {
   const picker = document.getElementById(`picker${i}`);
   const input = document.getElementById(`color${i}`);
