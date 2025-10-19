@@ -1,6 +1,6 @@
 {
-  "name": "画材記録アプリ",
-  "short_name": "画材記録",
+  "name": "Chromaria",
+  "short_name": "Chromaria",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
