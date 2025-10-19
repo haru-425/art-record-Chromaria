@@ -30,14 +30,16 @@ function renderPalettes(data, containerId, keyword = '', isUser = false) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
 
-  const sorted = [...data]
-    .filter(p =>
-      p.name.toLowerCase().includes(keyword) ||
-      p.author.toLowerCase().includes(keyword) ||
-      p.description.toLowerCase().includes(keyword) ||
-      p.colors.some(c => c.toLowerCase().includes(keyword))
-    )
-    .sort((a, b) => (b.favorite === true) - (a.favorite === true));
+  const filtered = [...data].filter(p =>
+    p.name.toLowerCase().includes(keyword) ||
+    p.author.toLowerCase().includes(keyword) ||
+    p.description.toLowerCase().includes(keyword) ||
+    p.colors.some(c => c.toLowerCase().includes(keyword))
+  );
+
+  const sorted = isUser
+    ? filtered.sort((a, b) => (b.favorite === true) - (a.favorite === true))
+    : filtered;
 
   sorted.forEach((palette, index) => {
     const card = document.createElement('div');
