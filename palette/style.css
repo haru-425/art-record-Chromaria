@@ -187,3 +187,7 @@ footer {
 .palette-card button:hover {
   opacity: 0.9;
 }
+
+section h2 {
+  text-align: center;
+}
