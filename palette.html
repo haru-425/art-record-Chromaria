@@ -1,59 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>🎨 共有カラーパレット</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>カラーパレットギャラリー</title>
+  <link rel="stylesheet" href="paletteStyle.css" />
 </head>
 <body>
   <header>
-    <h1>🎨 共有カラーパレット集</h1>
-    <button id="reload">🔄 最新データを読み込む</button>
+    <h1>🎨 カラーパレットギャラリー</h1>
+    <input type="text" id="search" placeholder="パレット名・作者・カラーコードで検索" />
   </header>
-  <main>
-    <div id="palettes">読み込み中...</div>
-  </main>
-
-  <script>
-    async function loadPalettes() {
-      const container = document.getElementById("palettes");
-      container.textContent = "読み込み中...";
-      try {
-        const res = await fetch("palettes.json?" + Date.now());
-        if (!res.ok) throw new Error("HTTPエラー: " + res.status);
-        const palettes = await res.json();
-        container.innerHTML = "";
-        palettes.forEach(p => {
-          const div = document.createElement("div");
-          div.className = "palette";
-          div.innerHTML = `
-            <h3>${p.name}</h3>
-            <p>👤 ${p.author || "匿名"}</p>
-            <div class="colors">
-              ${p.colors.map(c => `<div class="color" style="background:${c}" title="${c}">${c}</div>`).join("")}
-            </div>
-            <p class="desc">${p.description || ""}</p>
-          `;
-          container.appendChild(div);
-        });
-
-        // クリックで色コードコピー
-        document.querySelectorAll(".color").forEach(el => {
-          el.onclick = () => {
-            const color = el.textContent;
-            navigator.clipboard.writeText(color);
-            el.textContent = "📋";
-            setTimeout(() => (el.textContent = color), 700);
-          };
-        });
-      } catch (err) {
-        container.textContent = "データの読み込みに失敗しました。";
-        console.error("Fetchエラー:", err);
-      }
-    }
-
-    document.getElementById("reload").onclick = loadPalettes;
-    loadPalettes();
-  </script>
+  <main id="palette-container"></main>
+  <footer>
+    <p>© 2025 はるさんのカラーパレットコレクション</p>
+  </footer>
+  <script src="paletteScript.js"></script>
 </body>
 </html>

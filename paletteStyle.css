@@ -1,101 +1,95 @@
-/* 基本設定 */
 body {
-  font-family: 'Inter', sans-serif;
-  background: #f8fafc;
-  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f4f8;
   margin: 0;
   padding: 0;
+  color: #333;
 }
 
 header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #3b82f6;
+  background: #222;
   color: white;
-  padding: 1em;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-header h1 {
-  margin: 0 0 0.5em 0;
-  font-size: 1.5em;
+  padding: 1rem;
   text-align: center;
 }
 
-header button {
-  background: #fff;
-  color: #3b82f6;
+header input {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  width: 80%;
+  max-width: 400px;
+  font-size: 1rem;
+  border-radius: 5px;
   border: none;
-  padding: 0.5em 1em;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-header button:hover {
-  background: #e0e7ff;
 }
 
 main {
-  padding: 1em;
-}
-
-/* パレットグリッド */
-#palettes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1em;
-}
-
-/* パレットカード */
-.palette {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-  padding: 1em;
-  box-sizing: border-box;
-  transition: transform 0.15s ease;
-}
-
-.palette:hover {
-  transform: translateY(-3px);
-}
-
-.palette h3 {
-  margin: 0.2em 0;
-}
-
-.palette .desc {
-  font-size: 0.9em;
-  color: #555;
-  margin-top: 0.4em;
-}
-
-/* 色ブロック */
-.colors {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4em;
-  margin: 0.5em 0;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1.5rem;
 }
 
-.color {
-  flex: 1 1 0;
-  min-width: 50px;
-  height: 40px;
-  border-radius: 6px;
+.palette-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1rem;
+  width: 300px;
+}
+
+.palette-card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.palette-card .author {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.palette-card .description {
+  font-size: 0.95rem;
+  margin: 0.5rem 0;
+}
+
+.colors {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.color-box {
+  flex: 1;
+  height: 40px;
   cursor: pointer;
-  font-size: 0.8em;
-  font-weight: bold;
-  color: rgba(255,255,255,0.9);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  position: relative;
   transition: transform 0.2s;
 }
 
-.color:hover {
+.color-box:hover {
   transform: scale(1.05);
+}
+
+.color-box::after {
+  content: attr(data-hex);
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: #555;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.color-box:hover::after {
+  opacity: 1;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #888;
 }
