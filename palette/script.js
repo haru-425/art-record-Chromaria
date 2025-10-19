@@ -1,7 +1,17 @@
 let sitePalettes = [];
 let userPalettes = [];
 
-// 初期読み込み
+// ローカルストレージから自作パレットを復元
+const saved = localStorage.getItem('userPalettes');
+if (saved) {
+  try {
+    userPalettes = JSON.parse(saved);
+  } catch (e) {
+    console.warn('保存されたパレットの読み込みに失敗しました');
+  }
+}
+
+// 既存パレットを読み込み
 fetch('palettes.json')
   .then(res => res.json())
   .then(data => {
@@ -63,7 +73,7 @@ function copyColor(hex) {
   });
 }
 
-// 自作パレットのJSON保存
+// JSON保存（自作パレット）
 function exportSinglePalette(index) {
   const palette = userPalettes[index];
   const json = JSON.stringify(palette, null, 2);
@@ -76,10 +86,11 @@ function exportSinglePalette(index) {
   URL.revokeObjectURL(url);
 }
 
-// 自作パレットの削除
+// 削除（自作パレット）
 function deleteUserPalette(index) {
   if (confirm('このパレットを削除しますか？')) {
     userPalettes.splice(index, 1);
+    localStorage.setItem('userPalettes', JSON.stringify(userPalettes));
     renderAllPalettes();
   }
 }
@@ -87,6 +98,7 @@ function deleteUserPalette(index) {
 // お気に入りトグル
 function toggleFavorite(index) {
   userPalettes[index].favorite = !userPalettes[index].favorite;
+  localStorage.setItem('userPalettes', JSON.stringify(userPalettes));
   renderAllPalettes();
 }
 
@@ -109,6 +121,7 @@ document.getElementById('create-form').addEventListener('submit', e => {
 
   const newPalette = { name, author, description, colors, favorite: false };
   userPalettes.push(newPalette);
+  localStorage.setItem('userPalettes', JSON.stringify(userPalettes));
   renderAllPalettes();
   e.target.reset();
 
