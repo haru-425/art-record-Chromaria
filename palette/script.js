@@ -1,17 +1,27 @@
 let sitePalettes = [];
 let userPalettes = [];
+let siteFavorites = {};
 
-// ローカルストレージから自作パレットを復元
-const saved = localStorage.getItem('userPalettes');
-if (saved) {
+// ローカルストレージから復元
+const savedUser = localStorage.getItem('userPalettes');
+if (savedUser) {
   try {
-    userPalettes = JSON.parse(saved);
+    userPalettes = JSON.parse(savedUser);
   } catch (e) {
-    console.warn('保存されたパレットの読み込みに失敗しました');
+    console.warn('自作パレットの読み込みに失敗しました');
   }
 }
 
-// 既存パレットを読み込み
+const savedSiteFavs = localStorage.getItem('siteFavorites');
+if (savedSiteFavs) {
+  try {
+    siteFavorites = JSON.parse(savedSiteFavs);
+  } catch (e) {
+    console.warn('サイトお気に入りの読み込みに失敗しました');
+  }
+}
+
+// サイトパレット読み込み
 fetch('palettes.json')
   .then(res => res.json())
   .then(data => {
@@ -37,11 +47,14 @@ function renderPalettes(data, containerId, keyword = '', isUser = false) {
     p.colors.some(c => c.toLowerCase().includes(keyword))
   );
 
-  const sorted = isUser
-    ? filtered.sort((a, b) => (b.favorite === true) - (a.favorite === true))
-    : filtered;
+  const sorted = filtered.sort((a, b) => {
+    const favA = isUser ? a.favorite : siteFavorites[a.name] === true;
+    const favB = isUser ? b.favorite : siteFavorites[b.name] === true;
+    return (favB === true) - (favA === true);
+  });
 
   sorted.forEach((palette, index) => {
+    const isFav = isUser ? palette.favorite : siteFavorites[palette.name] === true;
     const card = document.createElement('div');
     card.className = 'palette-card';
     card.innerHTML = `
@@ -53,10 +66,14 @@ function renderPalettes(data, containerId, keyword = '', isUser = false) {
       ${isUser ? `
         <button onclick="exportSinglePalette(${index})">JSON保存</button>
         <button onclick="deleteUserPalette(${index})" style="background:#888;margin-left:0.5rem;">削除</button>
-        <button onclick="toggleFavorite(${index})" style="background:${palette.favorite ? '#FFD700' : '#ccc'};margin-left:0.5rem;">
-          ${palette.favorite ? '★ お気に入り' : '☆ お気に入り'}
+        <button onclick="toggleFavorite(${index})" style="background:${isFav ? '#FFD700' : '#ccc'};margin-left:0.5rem;">
+          ${isFav ? '★ お気に入り' : '☆ お気に入り'}
         </button>
-      ` : ''}
+      ` : `
+        <button onclick="toggleSiteFavorite('${palette.name}')" style="background:${isFav ? '#FFD700' : '#ccc'};margin-top:0.5rem;">
+          ${isFav ? '★ お気に入り' : '☆ お気に入り'}
+        </button>
+      `}
     `;
     container.appendChild(card);
   });
@@ -68,14 +85,14 @@ document.getElementById('search').addEventListener('input', e => {
   renderAllPalettes(keyword);
 });
 
-// カラーコードコピー
+// 色コードコピー
 function copyColor(hex) {
   navigator.clipboard.writeText(hex).then(() => {
     alert(`カラーコード ${hex} をコピーしました`);
   });
 }
 
-// JSON保存（自作パレット）
+// 自作パレットのJSON保存
 function exportSinglePalette(index) {
   const palette = userPalettes[index];
   const json = JSON.stringify(palette, null, 2);
@@ -88,7 +105,7 @@ function exportSinglePalette(index) {
   URL.revokeObjectURL(url);
 }
 
-// 削除（自作パレット）
+// 自作パレット削除
 function deleteUserPalette(index) {
   if (confirm('このパレットを削除しますか？')) {
     userPalettes.splice(index, 1);
@@ -97,10 +114,17 @@ function deleteUserPalette(index) {
   }
 }
 
-// お気に入りトグル
+// 自作パレットお気に入りトグル
 function toggleFavorite(index) {
   userPalettes[index].favorite = !userPalettes[index].favorite;
   localStorage.setItem('userPalettes', JSON.stringify(userPalettes));
+  renderAllPalettes();
+}
+
+// サイトパレットお気に入りトグル
+function toggleSiteFavorite(name) {
+  siteFavorites[name] = !siteFavorites[name];
+  localStorage.setItem('siteFavorites', JSON.stringify(siteFavorites));
   renderAllPalettes();
 }
 
@@ -127,14 +151,13 @@ document.getElementById('create-form').addEventListener('submit', e => {
   renderAllPalettes();
   e.target.reset();
 
-  // 入力欄とピッカーを初期化
   for (let i = 1; i <= 5; i++) {
     document.getElementById(`picker${i}`).value = '#000000';
     document.getElementById(`color${i}`).value = '#000000';
   }
 });
 
-// ピッカーとテキスト入力の同期
+// ピッカーとテキスト同期
 for (let i = 1; i <= 5; i++) {
   const picker = document.getElementById(`picker${i}`);
   const input = document.getElementById(`color${i}`);
