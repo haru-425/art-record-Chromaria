@@ -94,16 +94,19 @@ function copyColor(hex) {
 
 // 自作パレットのJSON保存
 function exportSinglePalette(index) {
-  const palette = userPalettes[index];
+  const { name, author, description, colors } = userPalettes[index];
+  const palette = { name, author, colors, description };
   const json = JSON.stringify(palette, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${palette.name.replace(/\s+/g, '_')}.json`;
+  a.download = `${name.replace(/\s+/g, '_')}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
+
+
 
 // 自作パレット削除
 function deleteUserPalette(index) {
